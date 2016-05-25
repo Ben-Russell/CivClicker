@@ -3346,7 +3346,7 @@ function load(loadType){
         alert(alertStr);
         return false;
     }
-    if (saveVersion.toNumber() < versionData.toNumber()) {
+    if (saveVersion.toNumber() < versionData.toNumber() && saveVersion.toNumber() < 1001.059) {
         // Migrate saved game data from older versions.
         var settingsVarReturn = { val: {} };
         migrateGameData(loadVar,settingsVarReturn);
