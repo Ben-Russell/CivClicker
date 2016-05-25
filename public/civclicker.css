@@ -138,12 +138,13 @@ button:disabled{
 
 /* Use two columns on large displays */
 @media screen and (min-width: 800px) {
-.mainContent {
-    /* Two-column display */
-    column-count: 2;
-    -moz-column-count: 2;
+    .civColumn {
+        /* should give columns on all browsers */
+        width: 50%;
+        float: left;
+    }
 }
-}
+
 
 /* Don't allow column breaks inside sections */
 /*xxx Unfortunately, support for these properties is very sketchy. */
@@ -185,8 +186,8 @@ button:disabled{
 
 #deitySelect,
 #conquestSelect,
-#tradeSelect{ 
-    display: none; 
+#tradeSelect{
+    display: none;
 }
 
 .paneSelector.selected{
@@ -207,7 +208,7 @@ button:disabled{
 .selectPane.selected {
     /* Note that this will cause a problem for non-block elements */
     /* We should use 'default', but it's not sufficiently supported yet */
-    display: block; 
+    display: block;
 }
 
 .devcost{
@@ -510,5 +511,3 @@ button.build{
 #resetWonder{
     display:none;
 }
-
-
