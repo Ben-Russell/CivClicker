@@ -1276,7 +1276,12 @@ function getPurchaseCellText(purchaseObj, qty, inTable) {
     // Internal utility functions.
     function sgnchr(x) { return (x > 0) ? "+" : (x < 0) ? "&minus;" : ""; }
     //xxx Hack: Special formatting for booleans, Infinity and 1k.
-    function infchr(x) { return (x == Infinity) ? "&infin;" : (x == 1000) ? "1k" : x; }
+    function infchr(x) {
+        return  (x == Infinity) ? "&infin;" :
+                (x == 1000) ? "1k" :
+                (x == 10000) ? "10k" :
+                (x == -1000) ? "-1k" : x;
+    }
     function fmtbool(x) {
         var neg = (sgn(x) < 0);
         return (neg ? "(" : "") + purchaseObj.getQtyName(0) + (neg ? ")" : "");
@@ -1323,7 +1328,7 @@ function getPurchaseRowText(purchaseObj)
     var objId = purchaseObj.id;
     var s = "<tr id='"+objId+"Row' class='purchaseRow' data-target='"+purchaseObj.id+"'>";
 
-    [-Infinity, "-custom", -100, -10, -1]
+    [-Infinity, "-custom", -1000, -100, -10, -1]
     .forEach(function(elem) { s += getPurchaseCellText(purchaseObj, elem); });
 
     var enemyFlag = (purchaseObj.alignment == "enemy") ? " enemy" : "";
@@ -1333,7 +1338,7 @@ function getPurchaseRowText(purchaseObj)
     s += "<td class='number'><span data-action='"+action+"'>0</span></td>";
 
     // Don't allow Infinite (max) purchase on things we can't sell back.
-    [1, 10, 100, "custom", ((purchaseObj.salable) ? Infinity : 1000)]
+    [1, 10, 100, 1000, "custom", ((purchaseObj.salable) ? Infinity : 10000)]
     .forEach(function(elem) { s += getPurchaseCellText(purchaseObj, elem); });
 
     s += "<td>" + getCostNote(purchaseObj) + "</td>";
@@ -1713,6 +1718,14 @@ function updatePopulationUI() {
             }
         }
     }
+    if (population.current + curCiv.zombie.owned >= 100000) {
+        if (!settings.customIncr){
+            elems = document.getElementsByClassName("building10000");
+            for(i = 0; i < elems.length; i++) {
+                setElemDisplay(elems[i],!settings.customincr);
+            }
+        }
+    }
 
     //Turning on/off buttons based on free space.
     var maxSpawn = Math.max(0,Math.min((population.limit - population.current),logSearchFn(calcWorkerCost,civData.food.owned)));
@@ -1723,6 +1736,7 @@ function updatePopulationUI() {
     document.getElementById("spawn10button").disabled = (maxSpawn < 10);
     document.getElementById("spawn100button").disabled = (maxSpawn < 100);
     document.getElementById("spawn1000button").disabled = (maxSpawn < 1000);
+    document.getElementById("spawn10000button").disabled = (maxSpawn < 10000);
 
     var canRaise = (getCurDeityDomain() == "underworld" && civData.devotion.owned >= 20);
     var maxRaise = canRaise ? logSearchFn(calcZombieCost,civData.piety.owned) : 0;
@@ -1737,6 +1751,7 @@ function updatePopulationUI() {
     document.getElementById("workerCost10").innerHTML = prettify(Math.round(calcWorkerCost(10)));
     document.getElementById("workerCost100").innerHTML = prettify(Math.round(calcWorkerCost(100)));
     document.getElementById("workerCost1000").innerHTML = prettify(Math.round(calcWorkerCost(1000)));
+    document.getElementById("workerCost10000").innerHTML = prettify(Math.round(calcWorkerCost(10000)));
     document.getElementById("workerNumMax").innerHTML = prettify(Math.round(maxSpawn));
     document.getElementById("workerCostMax").innerHTML = prettify(Math.round(calcWorkerCost(maxSpawn)));
     updateJobButtons(); //handles the display of units in the player's kingdom.
@@ -4316,6 +4331,9 @@ function setCustomQuantities(value){
 
     elems = document.getElementsByClassName("building1000");
     for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 10000)); }
+
+    elems = document.getElementsByClassName("building10000");
+    for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 100000)); }
 
     elems = document.getElementsByClassName("buildingInfinity");
     for (i = 0; i < elems.length; ++i) { setElemDisplay(elems[i],!settings.customIncr && (curPop >= 10000)); }
