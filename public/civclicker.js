@@ -1611,6 +1611,11 @@ function updatePopulation(){
     //xxx Doesn't subtracting the zombies here throw off the calculations in randomHealthyWorker()?
     population.healthy -= curCiv.zombie.owned;
 
+    // This is to further fix zombie -food problems
+    if(population.healthy < 0) {
+        population.healthy = 0;
+    }
+
     //Calculate housed/fed population (excludes zombies)
     population.current = population.healthy + population.totalSick;
     unitData.forEach(function(elem) { if ((elem.alignment == "player")&&(elem.subType == "normal")&&(elem.place == "party"))
@@ -2463,7 +2468,13 @@ function tickWalk() {
         civData.walk.rate = population.healthy;
         document.getElementById("ceaseWalk").disabled = true;
     }
-    if (civData.walk.rate <= 0) { return; }
+    if (civData.walk.rate <= 0) {
+
+        // This is to help fix games broken by -zombie food
+        civData.walk.rate = 0;
+
+        return;
+    }
 
     for (i=0;i<civData.walk.rate;++i){
         target = randomHealthyWorker(); //xxx Need to modify this to do them all at once.
