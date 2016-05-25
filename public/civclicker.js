@@ -22,7 +22,7 @@
 **/
 
 
-var version = 19; // This is an ordinal used to trigger reloads.
+var version = 20; // This is an ordinal used to trigger reloads.
 function VersionData(major,minor,sub,mod) {
     this.major = major;
     this.minor = minor;
@@ -33,7 +33,7 @@ VersionData.prototype.toNumber = function() { return this.major*1000 + this.mino
 VersionData.prototype.toString = function() { return String(this.major) + "."
     + String(this.minor) + "." + String(this.sub) + String(this.mod); };
 
-var versionData = new VersionData(1,1,59,"alpha");
+var versionData = new VersionData(1,1,60,"alpha");
 
 var saveTag = "civ";
 var saveTag2 = saveTag + "2"; // For old saves.
